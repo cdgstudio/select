@@ -1,14 +1,16 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map, shareReplay } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 export interface Repository {
-  items: {
-    name: string;
-    owner: {
-      avatar_url: string;
-    };
-  }[];
+  items: RepositoryItem[];
+}
+
+export interface RepositoryItem {
+  name: string;
+  owner: {
+    avatar_url: string;
+  };
 }
 
 @Injectable({

@@ -1,22 +1,21 @@
-<form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+<form [formGroup]="form" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
   <div class="mb-4">
     <label class="block text-gray-700 text-sm font-bold mb-2" for="name"> Name </label>
-    <app-select repositoryDataSource class="w-full" placeholder="Select GitHub profile">
+    <app-select repositoryDataSource class="w-full" placeholder="Select GitHub profile" formControlName="githubProfile">
       <app-repository-option *appOptionTemplate="let item" [data]="item" />
     </app-select>
   </div>
   <div class="mb-6">
     <label class="block text-gray-700 text-sm font-bold mb-2" for="country"> Country </label>
-    <app-select countryDataSource class="w-full" placeholder="Select country">
+    <app-select countryDataSource class="w-full" placeholder="Select country" formControlName="country">
       <app-country-select-option *appOptionTemplate="let item" [data]="item" />
     </app-select>
   </div>
   <div class="text-end">
-    <button
-      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-      type="submit"
-    >
-      Sign In
-    </button>
+    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">Sign In</button>
   </div>
+
+  <pre>
+    {{ form.value | json }}
+  </pre>
 </form>

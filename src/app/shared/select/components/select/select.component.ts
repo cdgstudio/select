@@ -1,15 +1,13 @@
 import { ActiveDescendantKeyManager } from '@angular/cdk/a11y';
-import { ENTER } from '@angular/cdk/keycodes';
+import { DOWN_ARROW, ENTER, UP_ARROW } from '@angular/cdk/keycodes';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import {
   AfterViewInit,
-  ChangeDetectorRef,
   Component,
   ContentChild,
   ElementRef,
   Input,
-  NgZone,
   OnDestroy,
   QueryList,
   TemplateRef,
@@ -19,17 +17,10 @@ import {
   inject,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BehaviorSubject, ReplaySubject, filter, map, shareReplay, tap } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, filter, map, shareReplay, tap, timer } from 'rxjs';
 import { OptionTemplateDirective } from '../../directives/option-template.directive';
 import { OptionWrapperDirective } from '../../directives/option-wrapper.directive';
 import { SelectDataSource } from '../../services/select.data-source';
-
-/**
- * @todo
- * * Hightlight selected item
- * * Run in next check closing modal
- *
- */
 
 @Component({
   selector: 'app-select',
@@ -66,23 +57,18 @@ export class SelectComponent implements ControlValueAccessor, AfterViewInit, OnD
     this.keyManager = new ActiveDescendantKeyManager(this.optionElsQuery).withHomeAndEnd().withWrap().withPageUpDown();
   }
 
+  handleButtonKeydown($event: KeyboardEvent): void {
+    const keyCode = $event.keyCode;
+    const isArrowKey = keyCode === UP_ARROW || keyCode === DOWN_ARROW;
+
+    if (isArrowKey) {
+      this.openOverlay();
+    }
+  }
+
   openOverlay(): void {
-    const positionStrategy = this.overlay
-      .position()
-      .flexibleConnectedTo(this.elementRef)
-
-      .withPositions([
-        { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 10 },
-        { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: 10 },
-      ]);
-
     if (this.overlayRef === null) {
-      this.overlayRef = this.overlay.create({
-        hasBackdrop: true,
-        backdropClass: '',
-        positionStrategy,
-        minWidth: this.elementRef.nativeElement.clientWidth,
-      });
+      this.overlayRef = this.createOverlay();
 
       this.overlayRef.outsidePointerEvents().subscribe(() => {
         this.overlayRef?.detach();
@@ -107,11 +93,18 @@ export class SelectComponent implements ControlValueAccessor, AfterViewInit, OnD
 
   selectOption(option: unknown): void {
     this.selectedValue$.next(option);
-    this.emitValue(option);
 
-    setTimeout(() => {
-      this.overlayRef?.detach();
-    }, 0);
+    const bindedValue = this.selectDataSource.getBindedValue(option);
+    this.emitValue(bindedValue);
+
+    // detach on a next tick
+    // otherwise on ENTER overlay is still enter
+    timer(1).subscribe({
+      next: () => {
+        this.overlayRef?.detach();
+        this.keyManager.setActiveItem(-1);
+      },
+    });
   }
 
   handleInput($event: Event): void {
@@ -127,13 +120,14 @@ export class SelectComponent implements ControlValueAccessor, AfterViewInit, OnD
     this.showSpinner$.next(true);
   }
 
-  handleKeydown($event: KeyboardEvent): void {
+  handleInputKeydown($event: KeyboardEvent): void {
     const key = $event.keyCode;
     const activeItem = this.keyManager.activeItem;
     if (key === ENTER && activeItem !== null) {
       this.selectOption(activeItem.value);
     } else {
       this.keyManager.onKeydown($event);
+      this.keyManager.activeItem?.scrollIntoElement();
     }
   }
 
@@ -160,5 +154,19 @@ export class SelectComponent implements ControlValueAccessor, AfterViewInit, OnD
     this.disabled$.complete();
     this.searchedValue$.complete();
     this.keyManager.destroy();
+  }
+
+  private createOverlay(): OverlayRef {
+    const positionStrategy = this.overlay
+      .position()
+      .flexibleConnectedTo(this.elementRef)
+      .withPositions([{ originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'top' }]);
+
+    return this.overlay.create({
+      hasBackdrop: true,
+      backdropClass: '',
+      positionStrategy,
+      minWidth: this.elementRef.nativeElement.clientWidth,
+    });
   }
 }

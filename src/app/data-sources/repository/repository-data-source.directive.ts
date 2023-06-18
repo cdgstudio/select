@@ -1,8 +1,7 @@
 import { Directive, inject } from '@angular/core';
+import { Observable, debounceTime, switchMap } from 'rxjs';
 import { SelectDataSource } from '../../shared/select';
-import { Observable, combineLatest, debounceTime, forkJoin, map, switchMap, timer } from 'rxjs';
-import { CountryService } from '../country/country.service';
-import { RepositoryService } from './repository.service';
+import { Repository, RepositoryItem, RepositoryService } from './repository.service';
 
 @Directive({
   selector: '[repositoryDataSource]',
@@ -14,7 +13,7 @@ import { RepositoryService } from './repository.service';
     },
   ],
 })
-export class RepositoryDataSourceDirective implements SelectDataSource {
+export class RepositoryDataSourceDirective implements SelectDataSource<RepositoryItem> {
   private service = inject(RepositoryService);
 
   getOptions(searchValue$: Observable<string>) {
@@ -22,5 +21,9 @@ export class RepositoryDataSourceDirective implements SelectDataSource {
       debounceTime(500),
       switchMap((searchValue) => this.service.repositories({ searchValue })),
     );
+  }
+
+  getBindedValue(value: RepositoryItem): string {
+    return value.name;
   }
 }

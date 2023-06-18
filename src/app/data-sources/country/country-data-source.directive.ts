@@ -1,7 +1,7 @@
 import { Directive, inject } from '@angular/core';
+import { Observable, forkJoin, map, switchMap, timer } from 'rxjs';
 import { SelectDataSource } from '../../shared/select';
-import { Observable, combineLatest, forkJoin, map, switchMap, timer } from 'rxjs';
-import { CountryService } from './country.service';
+import { Country, CountryService } from './country.service';
 
 @Directive({
   selector: '[countryDataSource]',
@@ -13,7 +13,7 @@ import { CountryService } from './country.service';
     },
   ],
 })
-export class CountryDataSourceDirective implements SelectDataSource {
+export class CountryDataSourceDirective implements SelectDataSource<Country> {
   private service = inject(CountryService);
 
   getOptions(searchValue$: Observable<string>) {
@@ -22,8 +22,12 @@ export class CountryDataSourceDirective implements SelectDataSource {
         forkJoin([
           this.service.countries$,
           timer(500), // fake delay
-        ]).pipe(map(([countries]) => countries.filter((country) => country.name.includes(searchValue)).slice(0, 5))),
+        ]).pipe(map(([countries]) => countries.filter((country) => country.name.includes(searchValue)).slice(0, 15))),
       ),
     );
+  }
+
+  getBindedValue(value: Country): unknown {
+    return value.code;
   }
 }

@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CountryDataSourceDirective } from './data-sources/country/country-data-source.directive';
 import { SelectModule } from './shared/select';
 import { CountrySelectOptionComponent } from './data-sources/country/country-option.component';
 import { RepositoryOptionComponent } from './data-sources/repository/repository-option.component';
 import { RepositoryDataSourceDirective } from './data-sources/repository/repository-data-source.directive';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -24,8 +25,12 @@ import { RepositoryDataSourceDirective } from './data-sources/repository/reposit
     CountryDataSourceDirective,
     RepositoryOptionComponent,
     RepositoryDataSourceDirective,
+    JsonPipe,
   ],
 })
 export class AppComponent {
-  control = new FormControl();
+  form = new FormGroup({
+    githubProfile: new FormControl(),
+    country: new FormControl(),
+  });
 }

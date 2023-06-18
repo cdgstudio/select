@@ -5,13 +5,10 @@
 /* Reset default button styles */
 button {
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
   background-color: transparent;
   border: none;
   padding: 0;
   margin: 0;
-  outline: none;
   cursor: pointer;
 }
 
@@ -35,33 +32,26 @@ button {
   &.placeholder {
     color: #636c72;
   }
-}
 
-.select::after {
-  content: '\25BE'; /* Downward-pointing triangle */
-  position: absolute;
-  top: 50%;
-  right: 0.5rem;
-  transform: translateY(-50%);
-}
+  &::after {
+    content: '\25BE'; /* Downward-pointing triangle */
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    transform: translateY(-50%);
+  }
 
-.select:hover {
-  border-color: #007bff;
-}
+  &:hover {
+    border-color: #007bff;
+  }
 
-.select:focus {
-  border-color: #007bff;
-  outline: none;
-}
+  &::after {
+    color: #333;
+  }
 
-/* Optional: Customize dropdown arrow color */
-.select::after {
-  color: #333;
-}
-
-/* Optional: Add additional styles to match your design */
-.select:hover::after {
-  color: #007bff;
+  &:hover::after {
+    color: #007bff;
+  }
 }
 
 // ---
@@ -80,6 +70,8 @@ ul {
   margin-top: 0;
   margin-bottom: 0;
   list-style: none;
+  max-height: 240px;
+  overflow-y: auto;
 }
 
 .option {
@@ -111,7 +103,7 @@ ul {
   }
 
   &.highlight {
-    background: red;
+    background: #f0f0f0;
   }
 }
 

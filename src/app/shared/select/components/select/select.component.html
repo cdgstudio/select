@@ -1,5 +1,6 @@
 <button
   (click)="openOverlay()"
+  (keydown)="handleButtonKeydown($event)"
   [disabled]="disabled$ | async"
   class="select"
   type="button"
@@ -22,7 +23,7 @@
         type="search"
         appFocus
         [value]="searchedValue$ | async"
-        (keydown)="handleKeydown($event)"
+        (keydown)="handleInputKeydown($event)"
         (input)="handleInput($event)"
       />
       <span [class.show]="showSpinner$ | async" class="spinner"></span>
