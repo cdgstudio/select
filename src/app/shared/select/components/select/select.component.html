@@ -31,7 +31,7 @@
 
     <ul>
       <li *ngFor="let option of options$ | async">
-        <button [optionWrapper]="option" (click)="selectOption(option)" class="option" type="button">
+        <button [hightlightableOption]="option" (click)="selectOption(option)" class="option" type="button">
           <ng-template
             [ngTemplateOutlet]="optionTemplateDirective.template"
             [ngTemplateOutletContext]="{ $implicit: option }"

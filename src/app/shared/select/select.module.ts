@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { SelectComponent } from './components/select/select.component';
 import { FocusDirective } from './directives/focus.directive';
 import { OptionTemplateDirective } from './directives/option-template.directive';
-import { OptionWrapperDirective } from './directives/option-wrapper.directive';
+import { HightlightableOptionDirective } from './directives/hightlightable-option.directive';
 
 @NgModule({
-  declarations: [SelectComponent, FocusDirective, OptionTemplateDirective, OptionWrapperDirective],
+  declarations: [SelectComponent, FocusDirective, OptionTemplateDirective, HightlightableOptionDirective],
   imports: [CommonModule],
   exports: [SelectComponent, OptionTemplateDirective],
 })

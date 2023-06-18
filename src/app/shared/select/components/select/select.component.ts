@@ -19,7 +19,7 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BehaviorSubject, ReplaySubject, filter, map, shareReplay, tap, timer } from 'rxjs';
 import { OptionTemplateDirective } from '../../directives/option-template.directive';
-import { OptionWrapperDirective } from '../../directives/option-wrapper.directive';
+import { HightlightableOptionDirective } from '../../directives/hightlightable-option.directive';
 import { SelectDataSource } from '../../services/select.data-source';
 
 @Component({
@@ -33,7 +33,7 @@ export class SelectComponent implements ControlValueAccessor, AfterViewInit, OnD
 
   @ViewChild('overlayContainer', { static: true }) overlayTemplate!: TemplateRef<void>;
   @ContentChild(OptionTemplateDirective, { static: true }) optionTemplateDirective!: OptionTemplateDirective;
-  @ViewChildren(OptionWrapperDirective) optionElsQuery!: QueryList<OptionWrapperDirective>;
+  @ViewChildren(HightlightableOptionDirective) optionElsQuery!: QueryList<HightlightableOptionDirective>;
 
   private selectDataSource = inject(SelectDataSource);
   private overlay = inject(Overlay);
@@ -51,7 +51,7 @@ export class SelectComponent implements ControlValueAccessor, AfterViewInit, OnD
   private overlayRef: OverlayRef | null = null;
   private emitValue = Function.prototype;
   private markAsTouched = Function.prototype;
-  private keyManager!: ActiveDescendantKeyManager<OptionWrapperDirective>;
+  private keyManager!: ActiveDescendantKeyManager<HightlightableOptionDirective>;
 
   ngAfterViewInit(): void {
     this.keyManager = new ActiveDescendantKeyManager(this.optionElsQuery).withHomeAndEnd().withWrap().withPageUpDown();

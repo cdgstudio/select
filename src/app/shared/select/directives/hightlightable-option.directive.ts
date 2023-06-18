@@ -2,10 +2,10 @@ import { Highlightable } from '@angular/cdk/a11y';
 import { Directive, ElementRef, HostBinding, Input, inject } from '@angular/core';
 
 @Directive({
-  selector: '[optionWrapper]',
+  selector: '[hightlightableOption]',
 })
-export class OptionWrapperDirective implements Highlightable {
-  @Input({ required: true, alias: 'optionWrapper' }) value!: unknown;
+export class HightlightableOptionDirective implements Highlightable {
+  @Input({ required: true, alias: 'hightlightableOption' }) value!: unknown;
 
   @HostBinding('class.highlight') highlight = false;
 
