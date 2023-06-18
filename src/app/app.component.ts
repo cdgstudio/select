@@ -13,7 +13,7 @@ import { JsonPipe } from '@angular/common';
   styles: [
     `
       :host {
-        @apply w-full max-w-xs m-auto my-4 block;
+        @apply w-full max-w-xl m-auto my-4 block;
       }
     `,
   ],
