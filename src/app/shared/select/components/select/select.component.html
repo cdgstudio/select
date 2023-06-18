@@ -1,0 +1,42 @@
+<button
+  (click)="openOverlay()"
+  [disabled]="disabled$ | async"
+  class="select"
+  type="button"
+  [class.placeholder]="(selectedValue$ | async) === null"
+>
+  <ng-template
+    *ngIf="selectedValue$ | async as selectedValue; else empty"
+    [ngTemplateOutlet]="optionTemplateDirective.template"
+    [ngTemplateOutletContext]="{ $implicit: selectedValue }"
+  ></ng-template>
+  <ng-template #empty>
+    {{ placeholder || '&nbsp;' }}
+  </ng-template>
+</button>
+
+<ng-template #overlayContainer>
+  <div class="container">
+    <div class="search-container">
+      <input
+        type="search"
+        appFocus
+        [value]="searchedValue$ | async"
+        (keydown)="handleKeydown($event)"
+        (input)="handleInput($event)"
+      />
+      <span [class.show]="showSpinner$ | async" class="spinner"></span>
+    </div>
+
+    <ul>
+      <li *ngFor="let option of options$ | async">
+        <button [optionWrapper]="option" (click)="selectOption(option)" class="option" type="button">
+          <ng-template
+            [ngTemplateOutlet]="optionTemplateDirective.template"
+            [ngTemplateOutletContext]="{ $implicit: option }"
+          ></ng-template>
+        </button>
+      </li>
+    </ul>
+  </div>
+</ng-template>
